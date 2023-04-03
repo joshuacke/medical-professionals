@@ -28,7 +28,7 @@ st.header('Physicians Data Analysis')
 st.subheader('Number of Issued Licenses Per Month')
 
 
-n_months_ago = st.number_input('Number of Months Lookback:', step = 1)
+n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1)
 
 ###
 
@@ -40,8 +40,7 @@ physicians['issuance_date'] = pd.to_datetime(physicians['issuance_date'], errors
 # physicians['graduation_year'] = physicians['med_school'].map(lambda x: str(x)[-4:])
 # physicians['graduation_year'] = pd.to_numeric(physicians['graduation_year'], errors='coerce')
 
-
-date_n_months_ago = dt.date.today() - relativedelta(months=n_months_ago)
+date_n_quarters_ago = dt.date.today() - relativedelta(months=n_quarters_ago*3)
 
 physicians = physicians[(physicians['addr1'].str.contains('TX', na=False)) |
 						(physicians['addr2'].str.contains('TX', na=False)) |
@@ -50,7 +49,7 @@ physicians = physicians[(physicians['addr1'].str.contains('TX', na=False)) |
 
 
 physicians_og  = physicians.copy()
-physicians = physicians[(physicians['issuance_date'].dt.date >= date_n_months_ago) & (physicians['issuance_date'].dt.date <= dt.date.today())]
+physicians = physicians[(physicians['issuance_date'].dt.date >= date_n_quarters_ago) & (physicians['issuance_date'].dt.date <= dt.date.today())]
 
 
 
@@ -64,10 +63,10 @@ physicians = physicians[(physicians['issuance_date'].dt.date >= date_n_months_ag
 physicians_plot = physicians.copy()
 
 physicians_plot.index = physicians_plot['issuance_date']
-issued_licenses_per_month = physicians_plot.resample('M')['license'].count()
+issued_licenses_per_month = physicians_plot.resample('Q')['license'].count()
 issued_licenses_per_month = issued_licenses_per_month.rename('Licenses')
 
-st.line_chart(issued_licenses_per_month)
+st.bar_chart(issued_licenses_per_month)
 
 
 ### 
