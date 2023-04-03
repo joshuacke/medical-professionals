@@ -28,7 +28,7 @@ st.header('Physicians Data Analysis')
 st.subheader('Number of Issued Licenses Per Quarter')
 
 
-n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1, min=1, value=8)
+n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1, min_value=1, value=8)
 
 ###
 
