@@ -33,7 +33,7 @@ n_months_ago = st.number_input('Number of Months Lookback:', step = 1)
 
 ###
 
-physicians = pd.read_csv('doctors/texas_doctors_v1.csv')
+physicians = pd.read_pickle('texas_doctors.pkl')
 physicians = physicians.drop_duplicates('license', keep='last')
 physicians['issuance_date'] = pd.to_datetime(physicians['issuance_date'], errors = 'coerce')
 
