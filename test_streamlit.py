@@ -25,7 +25,7 @@ st.set_page_config(page_title='Active Physician Tracker', page_icon='🫀', layo
 
 st.header('Physicians Data Analysis')
 
-st.subheader('Number of Issued Licenses Per Month')
+st.subheader('Number of Issued Licenses Per Quarter')
 
 
 n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1)
@@ -64,7 +64,7 @@ physicians_plot = physicians.copy()
 
 physicians_plot.index = physicians_plot['issuance_date']
 issued_licenses_per_month = physicians_plot.resample('Q')['license'].count()
-issued_licenses_per_month = issued_licenses_per_month.rename('Licenses')
+issued_licenses_per_month = issued_licenses_per_month.rename('Number of Licenses')
 
 st.bar_chart(issued_licenses_per_month)
 
