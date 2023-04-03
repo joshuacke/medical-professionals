@@ -28,7 +28,7 @@ st.header('Physicians Data Analysis')
 st.subheader('Number of Issued Licenses Per Quarter')
 
 
-n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1)
+n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1, min=1, value=8)
 
 ###
 
@@ -66,7 +66,7 @@ physicians_plot.index = physicians_plot['issuance_date']
 issued_licenses_per_month = physicians_plot.resample('Q')['license'].count()
 issued_licenses_per_month = issued_licenses_per_month.rename('Number of Licenses')
 
-st.bar_chart(issued_licenses_per_month, width=3)
+st.bar_chart(issued_licenses_per_month)
 
 
 ### 
