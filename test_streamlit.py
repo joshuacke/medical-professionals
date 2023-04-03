@@ -66,7 +66,7 @@ physicians_plot.index = physicians_plot['issuance_date']
 issued_licenses_per_month = physicians_plot.resample('Q')['license'].count()
 issued_licenses_per_month = issued_licenses_per_month.rename('Number of Licenses')
 
-st.bar_chart(issued_licenses_per_month)
+st.bar_chart(issued_licenses_per_month, width=3)
 
 
 ### 
