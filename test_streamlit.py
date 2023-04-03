@@ -19,6 +19,7 @@ from collections import Counter
 import random
 import streamlit as st
 import warnings
+import plotly.express as px
 warnings.filterwarnings("ignore", category=FutureWarning )
 
 st.set_page_config(page_title='Active Physician Tracker', page_icon='🫀', layout='wide')
@@ -28,7 +29,7 @@ st.header('Physicians Data Analysis')
 st.subheader('Number of Issued Licenses Per Quarter')
 
 
-n_quarters_ago = st.number_input('Number of Quarters Lookback:', step = 1, min_value=1, value=8)
+n_quarters_ago = st.number_input('Number of Months Lookback:', step = 1, min_value=1, value=6)
 
 ###
 
@@ -40,7 +41,7 @@ physicians['issuance_date'] = pd.to_datetime(physicians['issuance_date'], errors
 # physicians['graduation_year'] = physicians['med_school'].map(lambda x: str(x)[-4:])
 # physicians['graduation_year'] = pd.to_numeric(physicians['graduation_year'], errors='coerce')
 
-date_n_quarters_ago = dt.date.today() - relativedelta(months=n_quarters_ago*3)
+date_n_quarters_ago = dt.date.today() - relativedelta(months=n_quarters_ago)
 
 physicians = physicians[(physicians['addr1'].str.contains('TX', na=False)) |
 						(physicians['addr2'].str.contains('TX', na=False)) |
@@ -63,11 +64,20 @@ physicians = physicians[(physicians['issuance_date'].dt.date >= date_n_quarters_
 physicians_plot = physicians.copy()
 
 physicians_plot.index = physicians_plot['issuance_date']
-issued_licenses_per_month = physicians_plot.resample('Q')['license'].count()
+issued_licenses_per_month = physicians_plot.resample('M')['license'].count()
+
+
+
 issued_licenses_per_month = issued_licenses_per_month.rename('Number of Licenses')
 
-st.bar_chart(issued_licenses_per_month)
+issued_licenses_per_month = issued_licenses_per_month.reset_index()
+issued_licenses_per_month['issuance_date'] = issued_licenses_per_month['issuance_date'].dt.date
 
+plot = px.bar(issued_licenses_per_month, x='issuance_date', y = 'Number of Licenses', labels={'issuance_date': 'License Issuance Date'})
+plot.update_xaxes(showgrid=False)
+plot.update_yaxes(showgrid=False)
+
+st.plotly_chart(plot, use_container_width=True)
 
 ### 
 st.subheader('Active Physicians by City')
@@ -80,7 +90,6 @@ city_lon_map = pd.Series(city_geo['Lon'].values, index=city_geo['City']).to_dict
 active_physicians['lat'] = pd.to_numeric(active_physicians['city'].map(city_lat_map))
 active_physicians['lon'] = pd.to_numeric(active_physicians['city'].map(city_lon_map))
 active_physicians = active_physicians.dropna(subset=['lat', 'lon'])
-print(active_physicians)
 # active_physicians['lat']
 
 st.map(active_physicians)
